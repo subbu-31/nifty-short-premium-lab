@@ -1,0 +1,8 @@
+# Cost scenario: illustrative
+# Half-spread + slippage, paid once at entry (positions held to expiry,
+# cash-settled, no exit trade needed to cross the spread again).
+# These are a modeling assumption, not observed market data -- see
+# docs/methodology.md for why, and see calibrated.yaml for the alternative.
+short_leg_cost: 0.5      # index points, per short leg (straddle/strangle strikes)
+wing_leg_cost: 0.3       # index points, per long wing leg (condor)
+statutory_pct: 0.0006    # ~0.06% of sold premium: STT + exchange + GST + stamp duty (combined estimate)

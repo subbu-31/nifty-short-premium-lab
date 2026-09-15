@@ -1,0 +1,8 @@
+# Cost scenario: calibrated
+# The per-leg cost that reproduces the reference document's reported ~60%
+# transaction-cost erosion on the iron condor (found by bisection against
+# the condor backtest, then applied consistently to every structure --
+# not separately re-fit per structure, which would be cherry-picking).
+short_leg_cost: 0.971
+wing_leg_cost: 0.583     # 0.6 * short_leg_cost
+statutory_pct: 0.0006
