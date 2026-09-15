@@ -1,6 +1,10 @@
 # NIFTY Short-Premium Research Lab
 
 [![CI](https://github.com/subbu-31/nifty-short-premium-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/subbu-31/nifty-short-premium-lab/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.9%20%7C%203.11%20%7C%203.12-blue)](.github/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Findings](https://img.shields.io/badge/findings-4%20confirmed%20%7C%209%20null%20%7C%203%20retracted-informational)](#what-survived-what-didnt)
+[![Reproducibility](https://img.shields.io/badge/reproducibility-code_only-orange)](data/README.md)
 
 We tested a retail options-selling playbook — the catalogued anomalies and
 strategy ideas from Euan Sinclair's *Retail Options Trading* — against 71
