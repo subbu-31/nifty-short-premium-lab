@@ -1,6 +1,6 @@
 # NIFTY Short-Premium Research Lab
 
-[![CI](https://github.com/Subhash/nifty-short-premium-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/Subhash/nifty-short-premium-lab/actions/workflows/ci.yml)
+[![CI](https://github.com/subbu-31/nifty-short-premium-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/subbu-31/nifty-short-premium-lab/actions/workflows/ci.yml)
 
 We tested a retail options-selling playbook — the catalogued anomalies and
 strategy ideas from Euan Sinclair's *Retail Options Trading* — against 71
