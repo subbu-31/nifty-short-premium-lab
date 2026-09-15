@@ -1,0 +1,506 @@
+<title>Short Premium Findings</title>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F3F1EA;
+    --paper-raised:#FBFAF6;
+    --ink:#1E2330;
+    --ink-soft:#5C6270;
+    --ink-faint:#8B8F99;
+    --accent:#A8672E;
+    --accent-soft:#C98A4F;
+    --line:#D8D2C3;
+    --line-soft:#E6E1D3;
+    --confirmed:#3F6E52;
+    --confirmed-bg:#E4ECE5;
+    --null:#7C776A;
+    --null-bg:#EAE7DD;
+    --retracted:#A3402E;
+    --retracted-bg:#F1DDD6;
+    --chart-grid:#D8D2C3;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#171A20;
+      --paper-raised:#1F232B;
+      --ink:#EAE7DC;
+      --ink-soft:#A8ADB8;
+      --ink-faint:#767B87;
+      --accent:#D08A4F;
+      --accent-soft:#B4713A;
+      --line:#33373F;
+      --line-soft:#282C34;
+      --confirmed:#7FAE8E;
+      --confirmed-bg:#243128;
+      --null:#9B9689;
+      --null-bg:#2A2822;
+      --retracted:#D3806E;
+      --retracted-bg:#332420;
+      --chart-grid:#33373F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#171A20;
+    --paper-raised:#1F232B;
+    --ink:#EAE7DC;
+    --ink-soft:#A8ADB8;
+    --ink-faint:#767B87;
+    --accent:#D08A4F;
+    --accent-soft:#B4713A;
+    --line:#33373F;
+    --line-soft:#282C34;
+    --confirmed:#7FAE8E;
+    --confirmed-bg:#243128;
+    --null:#9B9689;
+    --null-bg:#2A2822;
+    --retracted:#D3806E;
+    --retracted-bg:#332420;
+    --chart-grid:#33373F;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans',system-ui,sans-serif;
+    line-height:1.6;
+    padding-inline:20px;
+    padding-block:56px 96px;
+  }
+  .page{max-width:760px;margin-inline:auto;}
+
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;text-wrap:balance;color:var(--ink);}
+  .masthead{margin-bottom:8px;}
+  .masthead .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 14px;
+  }
+  h1{font-size:clamp(32px,5vw,44px);font-weight:600;line-height:1.08;margin:0 0 14px;}
+  .dek{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:0 0 6px;}
+  .meta{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-faint);
+    display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 10px;
+  }
+  section{margin-top:64px;}
+  section > h2{font-size:26px;font-weight:600;margin:0 0 18px;}
+  p{margin:0 0 16px;max-width:66ch;}
+  p.lede{font-size:17px;color:var(--ink-soft);}
+  strong{color:var(--ink);font-weight:600;}
+
+  .verdict-box{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-left:3px solid var(--accent);
+    padding:24px 26px;
+    margin-block:20px;
+  }
+  .verdict-box p{margin-bottom:0;}
+  .verdict-box p + p{margin-top:12px;}
+
+  /* status pill */
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500;
+    letter-spacing:.03em;text-transform:uppercase;
+    padding:3px 9px;border-radius:3px;white-space:nowrap;
+  }
+  .pill.confirmed{color:var(--confirmed);background:var(--confirmed-bg);}
+  .pill.null{color:var(--null);background:var(--null-bg);}
+  .pill.retracted{color:var(--retracted);background:var(--retracted-bg);}
+
+  /* findings ledger table */
+  .ledger{
+    border-top:1px solid var(--ink-faint);
+    border-bottom:1px solid var(--ink-faint);
+  }
+  .ledger-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:4px 16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .ledger-row:last-child{border-bottom:none;}
+  .ledger-row .item{font-weight:600;font-size:15px;}
+  .ledger-row .evidence{
+    grid-column:1 / -1;
+    font-size:14px;color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace;
+    margin-top:2px;
+  }
+  .ledger-row .evidence .stat{color:var(--ink);}
+
+  /* generic data table (wraps for overflow) */
+  .twrap{overflow-x:auto;margin-block:18px;}
+  table.data{
+    border-collapse:collapse;width:100%;min-width:480px;
+    font-family:'IBM Plex Mono',monospace;font-size:13.5px;
+  }
+  table.data th{
+    text-align:right;font-weight:500;color:var(--ink-faint);
+    font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;
+    padding:0 10px 10px;border-bottom:1px solid var(--ink-faint);
+  }
+  table.data th:first-child{text-align:left;}
+  table.data td{
+    text-align:right;padding:9px 10px;border-bottom:1px solid var(--line-soft);
+    font-variant-numeric:tabular-nums;
+  }
+  table.data td:first-child{text-align:left;font-family:'Public Sans',sans-serif;font-weight:600;}
+  table.data tr:last-child td{border-bottom:none;}
+  table.data td.pos{color:var(--confirmed);}
+  table.data td.neg{color:var(--retracted);}
+
+  figure{margin:24px 0 8px;}
+  figcaption{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-faint);
+    margin-top:10px;
+  }
+
+  .plan-list{list-style:none;padding:0;margin:0;}
+  .plan-list li{
+    padding:18px 0;border-bottom:1px solid var(--line-soft);
+    display:grid;grid-template-columns:28px 1fr;gap:14px;
+  }
+  .plan-list li:last-child{border-bottom:none;}
+  .plan-list .num{
+    font-family:'IBM Plex Mono',monospace;color:var(--accent);
+    font-size:14px;padding-top:2px;
+  }
+  .plan-list h3{font-size:16.5px;margin:0 0 6px;font-family:'Public Sans',sans-serif;font-weight:700;}
+  .plan-list p{margin-bottom:6px;font-size:14.5px;}
+  .plan-list .caveat{
+    font-size:13px;color:var(--ink-faint);font-style:italic;
+  }
+
+  .footnote{
+    font-size:13px;color:var(--ink-faint);
+    border-top:1px solid var(--line);padding-top:20px;margin-top:56px;
+  }
+  .footnote p{margin-bottom:10px;}
+
+  a{color:var(--accent);}
+
+  @media (max-width:520px){
+    .ledger-row{grid-template-columns:1fr;}
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="kicker">Short Premium Research Programme — Findings Memo</p>
+    <h1>What actually survived</h1>
+    <p class="dek">Every catalogued idea from the Sinclair &amp; Mack toolkit, tested and stress-tested against a reconstructed NIFTY weekly-options chain. Most of it didn't hold.</p>
+    <div class="meta">
+      <span>NIFTY spot + weekly options, Jan 2024–May 2026</span>
+      <span>71 backtested weekly expiries</span>
+      <span>Compiled 2026-09-14</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Executive verdict</p>
+    <div class="verdict-box">
+      <p><strong>Nothing from the book's specific catalogued anomalies survived stress-testing.</strong> VWKS, the Hurst regime classifier, the Straddle Breakout Effect, the backwardation-fade calendar spread, day-of-week and day-after-expiry timing — every one of them either came back null on first test or failed a subsequent robustness check.</p>
+      <p>Two things are real. The <strong>volatility risk premium itself</strong> — implied consistently overshoots realized — and a <strong>volatility regime gate</strong>, which behaves exactly as the book's own ledger already described it: a risk filter that happens to also look like an edge, not validated alpha. A late-session refinement — gating on <strong>implied-vol (VIX) percentile rank</strong> rather than trailing realized vol — produced the single most robust result of the whole programme: every structure sold net negative in the bottom VIX tercile, and that split survived temporal-stability, outlier-sensitivity, and permutation testing better than anything else here, condor's permutation p=0.038. Still not airtight (multiple-comparisons-corrected p=0.065), but the best-supported lead in this memo. What follows is the honest account of what was tested, and then a brainstorm — three variants built and refuted, one gate refinement that held up — on whether VRP and the gate can be turned into something monetizable given what actually survived.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">The full ledger</p>
+    <h2>Every idea tested, plainly marked</h2>
+    <p class="lede">Confirmed means it held up under an independent stress test. Null means it never showed a real effect. Retracted means it looked real on first pass and did not survive further scrutiny — these are the ones worth reading twice.</p>
+
+    <div class="ledger">
+      <div class="ledger-row">
+        <span class="item">Volatility risk premium</span>
+        <span class="pill confirmed">Confirmed</span>
+        <span class="evidence">VIX overshoots realized vol on <span class="stat">75.2%</span> of days, mean spread <span class="stat">+1.60 pts</span>, overshoot ratio <span class="stat">1.13×</span></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">High-vol tercile gate</span>
+        <span class="pill confirmed">Confirmed — as risk filter</span>
+        <span class="evidence">Monotonic across all 3 structures; condor Low-vol tercile is net <span class="stat">negative</span>. But selection vs. random same-size subset: <span class="stat">p=0.24–0.45</span>, not distinguishable from chance</span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Momentum on raw daily up/down streaks</span>
+        <span class="pill confirmed">Confirmed — unrelated to the book</span>
+        <span class="evidence">n=569, correlation <span class="stat">−0.109</span>, permutation <span class="stat">p=0.010</span>, reproduced by an independent rewrite. Generic index autocorrelation, not an option-selling effect</span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">VWKS (volume-weighted strike/spot)</span>
+        <span class="pill null">Null</span>
+        <span class="evidence">Correlation with next-day return <span class="stat">−0.03 to −0.05</span>, all <span class="stat">p&gt;0.38</span></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Hurst exponent regime</span>
+        <span class="pill null">Null</span>
+        <span class="evidence">Raw estimator indistinguishable from a simulated random walk; bias-corrected, <span class="stat">95%</span> of days read as pure noise</span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Straddle Breakout Effect (book's actual claim)</span>
+        <span class="pill null">Null</span>
+        <span class="evidence">Tested on the strategy's own win/loss sequence: slope <span class="stat">p=0.40–0.50</span> for every structure</span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Day-of-week / day-after-expiry vol</span>
+        <span class="pill null">Null</span>
+        <span class="evidence">ANOVA <span class="stat">p=0.30</span>, Levene <span class="stat">p=0.20</span>; day-after-expiry ratio <span class="stat">1.02×</span> vs null <span class="stat">1.02×</span>, <span class="stat">p=0.97</span></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">GIFT Nifty overnight lead</span>
+        <span class="pill null">Null — as a lead indicator</span>
+        <span class="evidence">R²=<span class="stat">0.79</span> contemporaneous once correctly time-aligned, but zero forward lag: next-day Granger <span class="stat">p=0.90</span></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Vanna-crush / event calendar</span>
+        <span class="pill null">Null to weak</span>
+        <span class="evidence">RBI post-decision compression borderline (<span class="stat">p=0.063</span>); FOMC null once US/IST timing fixed; Budget n=3, too thin to trust</span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Backwardation-fade calendar spread</span>
+        <span class="pill retracted">Retracted</span>
+        <span class="evidence">Full sample looked real (<span class="stat">t=2.48, p=0.018</span>); entirely carried by the first 8 months — second-half t=0.35, p=0.73. Loses significance after removing 3 trades</span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">Tuesday/Thursday streak concentration</span>
+        <span class="pill retracted">Retracted</span>
+        <span class="evidence">Individually p=0.036 and p=0.065; family-wise corrected for testing 5 weekday groups: <span class="stat">p=0.38</span> — indistinguishable from chance</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">The cost problem</p>
+    <h2>Where the edge actually goes</h2>
+    <p>The 71-week backtest priced a half-spread-plus-slippage cost (0.5–1.0 pts/leg) and ~0.06% statutory charges against three structures sharing the same short strikes. The condor pays for four legs against the smallest premium base; the strangle and straddle pay for two against a much larger one.</p>
+
+    <div class="twrap">
+      <table class="data">
+        <thead>
+          <tr><th>Structure</th><th>Gross total (71wk)</th><th>Net, illustrative cost</th><th>Cost erosion</th><th>Net, calibrated to 60%</th><th>Cost erosion</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Straddle</td><td class="pos">₹1,984</td><td class="pos">₹1,899</td><td>4.3%</td><td class="pos">₹1,832</td><td>7.7%</td></tr>
+          <tr><td>Strangle</td><td class="pos">₹1,074</td><td class="pos">₹999</td><td>7.0%</td><td class="pos">₹932</td><td>13.2%</td></tr>
+          <tr><td>Iron condor</td><td class="pos">₹374</td><td class="pos">₹257</td><td>31.4%</td><td class="pos">₹150</td><td>60.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 700 260" role="img" aria-labelledby="chartTitle" style="width:100%;height:auto;">
+        <title id="chartTitle">Net P&amp;L by structure, illustrative vs cost-calibrated to 60% condor erosion</title>
+        <!-- gridlines -->
+        <g stroke="var(--chart-grid)" stroke-width="1">
+          <line x1="70" y1="30" x2="70" y2="210"/>
+          <line x1="70" y1="210" x2="660" y2="210"/>
+        </g>
+        <!-- y labels -->
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-faint)" text-anchor="end">
+          <text x="62" y="34">2000</text>
+          <text x="62" y="79">1500</text>
+          <text x="62" y="124">1000</text>
+          <text x="62" y="169">500</text>
+          <text x="62" y="214">0</text>
+        </g>
+        <g stroke="var(--chart-grid)" stroke-width="1" opacity="0.5">
+          <line x1="70" y1="34" x2="660" y2="34"/>
+          <line x1="70" y1="79" x2="660" y2="79"/>
+          <line x1="70" y1="124" x2="660" y2="124"/>
+          <line x1="70" y1="169" x2="660" y2="169"/>
+        </g>
+        <!-- bars: scale 0-2000 -> y 210(0) to 30(2000), i.e. 90px per 1000 -->
+        <!-- group 1: straddle -->
+        <g>
+          <rect x="120" y="32.1" width="34" height="177.9" fill="var(--ink-faint)" opacity="0.55"/>
+          <rect x="158" y="39.9" width="34" height="170.1" fill="var(--accent)"/>
+          <rect x="196" y="45.1" width="34" height="164.9" fill="var(--accent-soft)"/>
+          <text x="171" y="228" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="13" font-weight="600" fill="var(--ink)">Straddle</text>
+        </g>
+        <!-- group 2: strangle -->
+        <g>
+          <rect x="300" y="113.3" width="34" height="96.7" fill="var(--ink-faint)" opacity="0.55"/>
+          <rect x="338" y="120.9" width="34" height="89.1" fill="var(--accent)"/>
+          <rect x="376" y="126.1" width="34" height="83.9" fill="var(--accent-soft)"/>
+          <text x="351" y="228" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="13" font-weight="600" fill="var(--ink)">Strangle</text>
+        </g>
+        <!-- group 3: condor -->
+        <g>
+          <rect x="480" y="176.3" width="34" height="33.7" fill="var(--ink-faint)" opacity="0.55"/>
+          <rect x="518" y="187.9" width="34" height="22.1" fill="var(--accent)"/>
+          <rect x="556" y="196.5" width="34" height="13.5" fill="var(--accent-soft)"/>
+          <text x="531" y="228" text-anchor="middle" font-family="Public Sans, sans-serif" font-size="13" font-weight="600" fill="var(--ink)">Iron condor</text>
+        </g>
+        <!-- legend -->
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)">
+          <rect x="330" y="8" width="10" height="10" fill="var(--ink-faint)" opacity="0.55"/>
+          <text x="344" y="17">gross</text>
+          <rect x="400" y="8" width="10" height="10" fill="var(--accent)"/>
+          <text x="414" y="17">net, illustrative</text>
+          <rect x="530" y="8" width="10" height="10" fill="var(--accent-soft)"/>
+          <text x="544" y="17">net, calibrated to 60%</text>
+        </g>
+      </svg>
+      <figcaption>Fig. 1 — Net P&amp;L (₹, 1 lot, 71 weeks) by structure. The condor loses most of its edge to transaction cost regardless of which cost assumption is used; the strangle keeps the large majority of it.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <p class="eyebrow">Regime effect</p>
+    <h2>The gate works — as a filter, not a forecast</h2>
+    <p>Splitting the same 71 weeks by trailing realized-vol tercile shows the same pattern in every structure: low-vol weeks are weak or outright loss-making, high-vol weeks carry the return.</p>
+
+    <div class="twrap">
+      <table class="data">
+        <thead>
+          <tr><th>Structure</th><th>Low-vol (n=36)</th><th>Mid-vol (n=13)</th><th>High-vol (n=22)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Straddle, net/wk</td><td class="pos">+2.71</td><td class="pos">+32.44</td><td class="pos">+62.71</td></tr>
+          <tr><td>Strangle, net/wk</td><td class="neg">−0.70</td><td class="pos">+16.13</td><td class="pos">+37.02</td></tr>
+          <tr><td>Iron condor, net/wk</td><td class="neg">−7.40</td><td class="neg">−0.83</td><td class="pos">+24.26</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>But a permutation test against a random 22-of-71 week subset shows the high-vol selection isn't statistically distinguishable from picking any 22 weeks at random (condor: 88th percentile of the null, p=0.24; straddle and strangle weaker still). The pattern is real and monotonic; whether it's genuine forecast skill or just where the fat left tail of realized outcomes happens to concentrate is not something 71 weeks can answer.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Last finding of the session</p>
+    <h2>Implied vol rank is a sharper filter than realized vol</h2>
+    <p>One last dig before closing out: gate on India VIX's own trailing percentile rank instead of realized volatility — the signal a real premium seller would actually reach for ("is IV rich relative to its own recent range"), built the same walk-forward, no-look-ahead way as every other gate this session.</p>
+    <div class="twrap">
+      <table class="data">
+        <thead>
+          <tr><th>Structure</th><th>VIX-Low (n=39)</th><th>VIX-Mid (n=10)</th><th>VIX-High (n=17)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Straddle, net/wk</td><td class="neg">−30.43</td><td class="pos">+114.20</td><td class="pos">+89.93</td></tr>
+          <tr><td>Strangle, net/wk</td><td class="neg">−15.17</td><td class="pos">+62.61</td><td class="pos">+43.49</td></tr>
+          <tr><td>Iron condor, net/wk</td><td class="neg">−18.14</td><td class="pos">+27.77</td><td class="pos">+35.94</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Every structure is net <em>negative</em> in the bottom VIX tercile, not just weak — a cleaner split than the realized-vol version above. Run through the same gauntlet that killed the calendar spread and the weekday effect:</p>
+    <div class="twrap">
+      <table class="data">
+        <thead><tr><th>Stress test</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Temporal stability</td><td class="pos">Holds in both halves — condor: −13.36→+13.88 (1st half), −23.72→+48.15 (2nd half). Strengthens, doesn't decay.</td></tr>
+          <tr><td>Outlier sensitivity</td><td class="pos">Dropping the single largest value from each group strengthens it (p=0.040→0.015)</td></tr>
+          <tr><td>Permutation vs. random subset</td><td class="pos">Condor: 98.1th percentile, p=0.038</td></tr>
+          <tr><td>Multiple-comparisons correction (3 structures)</td><td>Family-wise p=0.065 — borderline, not airtight</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>This is the most robust regime-gating result of the whole programme — it survives exactly the checks that killed the calendar spread (temporal decay) and the weekday concentration (multiple-comparisons correction), even if it doesn't fully clear the last one on its own. Not proof, but a real, economically sensible lead: implied vol rank, not trailing realized vol, looks like the sharper filter for when this regime is unsafe to sell premium in.</p>
+    <p class="caveat" style="font-size:13px;color:var(--ink-faint);font-style:italic;">Not yet built: a path-dependent stop-loss/profit-target exit rule — the most promising remaining idea, since it manages tail risk without the standing weekly cost that sank the put-wing protection test. Needs daily mark-to-market data across the holding period rather than entry/expiry snapshots; flagged as the natural next build, not abandoned.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Testing the brainstorm</p>
+    <h2>Three more ideas, tested — all refuted</h2>
+    <p>Three follow-on ideas looked promising enough to build rather than just propose, including the one idea in this whole programme built on a statistically validated signal. All three came back negative, and one inverted the intuition behind it.</p>
+
+    <h3 style="font-family:'Public Sans',sans-serif;font-size:16px;margin:24px 0 8px;">Regime-blended structure</h3>
+    <p>Hypothesis: hold straddle in calm weeks — the only structure that stays clearly positive there — and switch to a protected strangle once vol is already elevated. Tested by recombining the same 71 weeks' P&amp;L along the tercile split.</p>
+    <div class="twrap">
+      <table class="data">
+        <thead><tr><th>Approach</th><th>Total (71wk)</th><th>Mean/wk</th><th>Sharpe-like</th></tr></thead>
+        <tbody>
+          <tr><td>Static straddle</td><td class="pos">₹1,899</td><td class="pos">₹26.75</td><td>0.74</td></tr>
+          <tr><td>Regime-blended</td><td class="pos">₹1,334</td><td class="pos">₹18.78</td><td>0.63</td></tr>
+          <tr><td>Static strangle</td><td class="pos">₹999</td><td class="pos">₹14.07</td><td>0.63</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Refuted.</strong> Straddle beats strangle in every single tercile in this sample, including High-vol (₹62.71/wk vs. ₹37.02/wk) — switching to "protection" specifically when vol is already elevated made things worse, not better. Wing cost is a pure drag in a sample with no real crash to pay it off. Just holding straddle throughout beats the blend.</p>
+
+    <h3 style="font-family:'Public Sans',sans-serif;font-size:16px;margin:24px 0 8px;">Asymmetric single-wing protection</h3>
+    <p>Hypothesis: buy only the downside put wing — the fatter, costlier tail — skip the call wing, keep most of the strangle's edge at roughly half the extra-leg cost. Built and backtested with the same strike-selection logic across the same 71 weeks, call wing removed.</p>
+    <div class="twrap">
+      <table class="data">
+        <thead><tr><th>Structure</th><th>Gross total</th><th>Legs</th><th>Cost erosion, illustrative</th></tr></thead>
+        <tbody>
+          <tr><td>Strangle, no protection</td><td class="pos">₹1,074</td><td>2</td><td>7.0%</td></tr>
+          <tr><td>Put-wing only (asymmetric)</td><td class="pos">₹115</td><td>3</td><td class="neg">83.7%</td></tr>
+          <tr><td>Iron condor, both wings</td><td class="pos">₹374</td><td>4</td><td>31.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Refuted, and inverted.</strong> The put wing alone consumed ~89% of the strangle's entire gross edge (₹958.7 net cost against ₹1,074 gross) — worse erosion than the full 4-leg condor. NIFTY's put-side skew makes downside insurance structurally the priciest leg on the board, and this sample never saw a crash big enough to pay that premium back. Isolating the call wing's own contribution (condor gross minus asymmetric gross) shows it actually <em>added</em> ~₹259 net over the same period — the opposite leg from the one "protect the fat tail" intuition said to keep.</p>
+
+    <h3 style="font-family:'Public Sans',sans-serif;font-size:16px;margin:24px 0 8px;">Momentum-tilted strike selection</h3>
+    <p>Hypothesis: use the one validated finding in this whole programme — the raw-price momentum streak — to skew strike placement. After an up-streak, widen the call strike (reduce exposure to likely continuation) and pull the put strike closer (collect more premium on the side now judged safer); mirror it for down-streaks. Built with the same delta-targeting infrastructure, tilt magnitude scaled to streak length.</p>
+    <div class="twrap">
+      <table class="data">
+        <thead><tr><th>Approach</th><th>Gross total</th><th>Mean/wk</th><th>Net, illustrative</th></tr></thead>
+        <tbody>
+          <tr><td>Static ±0.20Δ strangle</td><td class="pos">₹1,074</td><td class="pos">₹15.13</td><td class="pos">₹999</td></tr>
+          <tr><td>Momentum-tilted strangle</td><td class="pos">₹625</td><td class="pos">₹8.80</td><td class="pos">₹550</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Refuted.</strong> The tilt applied on every one of the 71 entry weeks (no week landed on a streak of exactly zero) and lost roughly 42% of the strangle's edge (paired t=-1.50, p=0.137 — not significant, but directionally consistent and sizeable). The mechanism: the momentum effect is real but weak — reversal probability drops from ~52% to ~37-40% after a strong streak, it doesn't vanish. Moving the "safer" strike closer to the money to collect more premium raises delta exposure on exactly that side, and option losses are convex — the extra loss on the ~38% of weeks that reverse anyway outweighs the modest extra premium banked on the weeks that continue. A weak statistical edge doesn't survive being concentrated into a single strike decision.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Brainstorm</p>
+    <h2>Can VRP and the gate actually be monetized?</h2>
+    <p class="lede">Given everything above, here's the honest path — not a proof, a set of specific, falsifiable next moves that follow directly from what held up.</p>
+
+    <ol class="plan-list">
+      <li>
+        <span class="num">1</span>
+        <div>
+          <h3>Retire the condor as the default structure</h3>
+          <p>The long wings aren't buying enough tail protection to justify what they cost in this sample — condor erosion runs 4–8× worse than the strangle's under identical per-leg cost assumptions. The strangle keeps 87–93% of gross where the condor keeps 40–69%. This is a structural conclusion, not a market call: it follows from leg count and premium size, not from anything that could regime-shift.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num">2</span>
+        <div>
+          <h3>Don't buy single-sided put protection — tested, and it's backwards</h3>
+          <p>A put-only wing ate 89% of the strangle's edge in this sample, worse erosion than the full condor's 31–60%. NIFTY's put-side skew makes downside insurance structurally the most expensive leg in the chain — paying for it every week regardless of conditions comes close to giving the whole strangle edge away. If tail protection is wanted at all, this data argues for buying it selectively — e.g. only when the vol gate itself signals stress — rather than as a standing weekly cost. That selective-timing variant hasn't been tested yet.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num">3</span>
+        <div>
+          <h3>Turn the gate into a size dial, not a switch</h3>
+          <p>Since the high-vol selection can't be shown to beat a random subset (p=0.24–0.45), treating it as a binary trade/no-trade rule overstates what's known. But the monotonic Low→Mid→High pattern is real and repeats across every structure — that's usable as a <em>sizing</em> input even without proven selection skill: scale size up in the top tercile, down (not to zero) in the bottom, so low-vol weeks — which are weak, not always losing, for straddle and strangle — still collect some theta rather than sitting out capital entirely.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num">4</span>
+        <div>
+          <h3>Confirm margin capacity before switching</h3>
+          <p>Strangle is undefined-risk and carries meaningfully higher SPAN margin than a condor at equal lot count — this was flagged in the original research doc and never re-litigated here. The structure swap in (1) is a drop-in improvement on paper only if the account can actually hold the margin at the size currently traded.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num">5</span>
+        <div>
+          <h3>Size with quarter-Kelly, informed by the real edge/variance measured here</h3>
+          <p>Strangle: mean ≈ ₹14/week, std ≈ ₹160/week on 1 lot — a thin edge-to-noise ratio even before scaling to real capital. Run the standard quarter-Kelly halving-and-shrinking process against this ratio rather than against intuition, and re-derive it once a bigger sample exists — 71 weeks is nowhere near enough to trust a Kelly fraction on its own.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <div class="footnote">
+    <p><strong>What this is and isn't.</strong> This memo reflects one 71-week reconstructed backtest (Jan 2025–May 2026) built from local option-chain data, cross-checked against Kite Connect pulls for VIX, futures, GIFT Nifty, crude, and USDINR. It is not a live trading record, and several findings here — the momentum streak, the gate's tercile pattern — are statistically real but small-sample. Three brainstormed ideas (regime-blending, asymmetric put-wing protection, momentum-tilted strikes) were built and tested rather than left as proposals, and all three came back negative — including the one built directly on this session's single validated signal. That's the clearest evidence in this whole memo that a plausible-sounding idea is exactly the kind of thing that most needs testing, not the kind that can skip it: even a real, statistically significant edge didn't survive being turned into a strike-selection rule. Treat every recommendation above as a hypothesis for the next, larger validation pass, not a finished trading rule.</p>
+  </div>
+
+</div>
