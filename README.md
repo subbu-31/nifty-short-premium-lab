@@ -69,6 +69,10 @@ flowchart LR
     F --> G[Report]
 ```
 
+## What runs without data 
+
+'make test' includes a multi-session synthetic fixture ('tests/fixtures/synthetic_chain.py') that drives the backtest engine across 71 fabricated expiries with a known realized vol and a separately controlled implied vol. It verifies delta targeting, IV round-trip, the sign of the response to a volatility premium, cost-drag ordering between structures, and a no-look-ahead probe. It reproduces none of the findings below — those need real chains — but it proves the machinery that produced them behaves as described.
+
 | Stage | Does | Code |
 |---|---|---|
 | Data | Ingest + normalize option chain, VIX, futures. Unit conversion happens once, here. | `pipeline/data/` |
@@ -90,7 +94,7 @@ into this staged architecture yet. Honest boundary, not hidden.
 
 ```bash
 make install   # pip install -r requirements.txt
-make test      # BSM solver + walk-forward classifier regression tests (12 tests)
+make test      # BSM solver + walk-forward classifier regression tests (21 tests)
 make smoke     # runs the backtest engine end-to-end against a synthetic option chain
 ```
 
